@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+    web:
+        image: lavoweb/php-7.1
+        ports:
+            - "80:80"
+        volumes:
+            - ~/.docker/www:/var/www/html
+        links:
+            - db:db
+    db:
+        image: mysql:8.0
+        restart: 'always'
+        volumes:
+            - ~/.docker/mysql:/var/lib/mysql
+        ports:
+            - "3306:3306"
+        environment:
+            - MYSQL_DATABASE=wordpress
+            - MYSQL_USER=root
+            - MYSQL_PASSWORD=root
+            - MYSQL_ROOT_PASSWORD=root  
+    myadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin
+        environment:
+          - PMA_ARBITRARY=1
+        restart: always
+        ports:
+          - 8080:80
+        volumes:
+          - /sessions
+        links:
+          - db:db
